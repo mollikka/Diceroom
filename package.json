@@ -1,0 +1,14 @@
+{
+    "name": "diceroom-test-1",
+    "version": "0.0.1",
+    "scripts": {
+      "build": "babel src -d build",
+      "start": "node build/index.js"
+    },
+    "description": "Play nice, roll the dice",
+    "dependencies": {
+        "@babel/cli": "^7.8.4",
+        "@babel/core": "^7.9.0",
+        "express": "^4.17.1"
+    }
+}
