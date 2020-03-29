@@ -18,9 +18,11 @@ io.on('connection', function (socket) {
   var socketId = socket.id;
   var address = socket.request.connection.remoteAddress;
   console.log('('+socketId+') user connected from ' + address);
+  io.emit('broadcast join', '');
 
   socket.on('disconnect', function () {
     console.log('('+socketId+') user disconnected');
+    io.emit('broadcast leave', '');
   });
 
   //receive and broadcast message

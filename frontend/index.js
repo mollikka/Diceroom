@@ -7,7 +7,7 @@ function displayMessage(msgType, msgText) {
   var timestamp = (new Date).toLocaleTimeString('fi-FI');
   var newEntry = $('#chat-display ul').append($('<li>'));
   newEntry.append($('<span class=chat-timestamp>'+timestamp+'</span>'));
-  newEntry.append($('<span class=chat-"'+msgType+'"></span>').text(msgText));
+  newEntry.append($('<span class=chat-'+msgType+'></span>').text(msgText));
   scrollToBottom();
 };
 
@@ -33,6 +33,14 @@ $(function() {
   });
 
   socket.on('broadcast message', function(msg) {
-    displayMessage('chat-message', msg);
+    displayMessage('message', msg);
+  });
+
+  socket.on('broadcast join', function(msg) {
+    displayMessage('join', 'user connected');
+  });
+
+  socket.on('broadcast leave', function(msg) {
+    displayMessage('leave', 'user disconnected');
   });
 });

@@ -30,6 +30,7 @@ html, body {
 
 .chat-timestamp {
   color: gray;
+  font-weight: 100;
 }
 
 .chat-timestamp::before {
@@ -38,6 +39,16 @@ html, body {
 
 .chat-timestamp::after {
   content: '] ';
+}
+
+.chat-join, .chat-leave {
+  color: gray;
+  font-weight: 100;
+}
+
+.chat-message {
+  color: black;
+  font-weight: 600;
 }
 
 .scroll {
