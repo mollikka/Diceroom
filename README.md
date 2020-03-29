@@ -31,6 +31,7 @@ remote D&D games.
  - [Express](expressjs.com) is a minimalist web framework for Node.js
  - [socket.io](socket.io) handles HTML sockets
  - [Babel](babeljs.io) compiles Javascript for modern JS features
+ - [nodemon](github.com/remy/nodemon) monitors changes and restarts Node.js when developing
 
 ### Other stuff I might want to look at
 

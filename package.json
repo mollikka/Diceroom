@@ -2,13 +2,17 @@
     "name": "diceroom-test-1",
     "version": "0.0.1",
     "scripts": {
-      "build": "babel src -d build",
-      "start": "node build/index.js"
+        "watch": "nodemon -w frontend -w backend -e '*'",
+        "start": "(npm run build && npm run deploy)",
+        "build": "babel backend -d build --copy-files; babel frontend -d build/frontend --copy-files",
+        "deploy": "node build/main.js"
     },
     "description": "Play nice, roll the dice",
     "dependencies": {
         "@babel/cli": "^7.8.4",
         "@babel/core": "^7.9.0",
-        "express": "^4.17.1"
+        "express": "^4.17.1",
+        "nodemon": "^2.0.2",
+        "socket.io": "^2.3.0"
     }
 }
