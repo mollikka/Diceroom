@@ -14,22 +14,41 @@ app.get('/', function (req, res) {
   res.sendFile(__dirname + '/index.html');
 });
 
+function leaveChannel(socket, channelName) {
+  socket.leave(channelName, function() {
+    if (socket.channel == channelName) {
+      socket.channel = '';
+    }
+    socket.to(channelName).emit('broadcast leave', socket.nickname, channelName);
+  });
+}
+
+function joinChannel(socket, channelname) {
+  var newRoom = channelname.substring(0, c.MAX_CHANNELNAME_LENGTH);
+  socket.join(newRoom, function() {
+    socket.channel = newRoom;
+    socket.to(newRoom).emit('broadcast join', socket.nickname, newRoom);
+  });
+}
+
 io.on('connection', function (socket) {
   var socketId = socket.id;
   var address = socket.request.connection.remoteAddress;
+
   socket.nickname = 'guest';
+
   console.log('('+socketId+') ' + socket.nickname + ' connected from ' + address);
-  io.emit('broadcast join', socket.nickname);
+  joinChannel(socket, c.DEFAULT_CHANNEL);
 
   socket.on('disconnect', function () {
     console.log('('+socketId+') ' + socket.nickname +' disconnected');
-    io.emit('broadcast leave', socket.nickname);
+    socket.to(socket.channel).emit('broadcast leave', socket.nickname);
   });
 
   //receive and broadcast message
   socket.on('send message', function(msg) {
     console.log('('+socketId+') ' + socket.nickname + ' said: '+msg);
-    io.emit('broadcast message', socket.nickname, msg);
+    socket.to(socket.channel).emit('broadcast message', socket.nickname, msg);
   });
 
   socket.on('send rename', function(msg) {
@@ -37,7 +56,19 @@ io.on('connection', function (socket) {
     var newName = msg.substring(0, c.MAX_NICKNAME_LENGTH);
     console.log('('+socketId+') ' + oldName + ' renamed to ' + newName);
     socket.nickname = newName;
-    io.emit('broadcast rename', oldName, newName);
+    socket.to(socket.channel).emit('broadcast rename', oldName, newName);
+  });
+
+  socket.on('send join', function(msg) {
+    var oldRoom = socket.channel;
+    var newRoom = msg.substring(0, c.MAX_CHANNELNAME_LENGTH);
+    joinChannel(socket, newRoom);
+    leaveChannel(socket, oldRoom);
+  });
+
+  socket.on('send leave', function(msg) {
+    var oldRoom = socket.channel;
+    leaveChannel(socket, oldRoom);
   });
 
 });

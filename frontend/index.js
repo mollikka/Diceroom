@@ -13,11 +13,14 @@ function displayMessage(msgType, nick, msgText) {
 };
 
 function sendMessage(socket, msgType, msgText) {
+  console.log(msgType + ': ' + msgText);
   socket.emit('send '+msgType, msgText);
 };
 
 $(function() {
   var socket = io();
+  socket.nickname = 'guest';
+  displayMessage('connect', 'you', 'connected');
 
   //submit chat message
   $('#chat-input').submit(function(e) {
@@ -30,11 +33,18 @@ $(function() {
     if (commandMatch) {
       operator = commandMatch[1];
       operand = commandMatch[2];
-      if (operator = 'nick') {
+      if (operator == 'nick') {
+        socket.nickname = operand;
         sendMessage(socket, 'rename', operand);
+        displayMessage('rename', 'you', 'renamed yourself to ' + operand);
+      } else if (operator == 'join') {
+        socket.channel = operand;
+        sendMessage(socket, 'join', operand);
+        displayMessage('join', 'you', 'moved to ' + operand);
       }
     } else {
       sendMessage(socket, 'message', message);
+      displayMessage('message', socket.nickname, message);
     }
 
     //clear message field
@@ -43,16 +53,25 @@ $(function() {
     return false;
   });
 
+  socket.on('disconnect', function(socket) {
+    displayMessage('connect', 'you', 'disconnected');
+  });
+
+  socket.on('reconnect', function(socket) {
+    displayMessage('connect', 'you', 'reconnected');
+    sendMessage(socket, 'rename', socket.nickname);
+  });
+
   socket.on('broadcast message', function(nick, msg) {
     displayMessage('message', nick, msg);
   });
 
-  socket.on('broadcast join', function(nick) {
-    displayMessage('join', nick, 'connected');
+  socket.on('broadcast join', function(nick, channel) {
+    displayMessage('join', nick, 'joined ' + channel);
   });
 
-  socket.on('broadcast leave', function(nick) {
-    displayMessage('leave', nick, 'disconnected');
+  socket.on('broadcast leave', function(nick, channel) {
+    displayMessage('leave', nick, 'left ' + channel);
   });
 
   socket.on('broadcast rename', function(oldName, newName) {

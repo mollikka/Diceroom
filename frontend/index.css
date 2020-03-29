@@ -54,7 +54,7 @@ html, body {
   content: '] ';
 }
 
-.chat-join, .chat-leave, .chat-rename {
+.chat-join, .chat-leave, .chat-rename, .chat-connect {
   color: gray;
   font-weight: 100;
 }
