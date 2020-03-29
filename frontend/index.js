@@ -4,7 +4,10 @@ function scrollToBottom() {
 };
 
 function displayMessage(msgType, msgText) {
-  $('#chat-display ul').append($('<li class=chat-"'+msgType+'">').text(msgText));
+  var timestamp = (new Date).toLocaleTimeString('fi-FI');
+  var newEntry = $('#chat-display ul').append($('<li>'));
+  newEntry.append($('<span class=chat-timestamp>'+timestamp+'</span>'));
+  newEntry.append($('<span class=chat-"'+msgType+'"></span>').text(msgText));
   scrollToBottom();
 };
 

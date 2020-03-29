@@ -28,6 +28,18 @@ html, body {
   padding-bottom: 0.5em;
 }
 
+.chat-timestamp {
+  color: gray;
+}
+
+.chat-timestamp::before {
+  content: '[';
+}
+
+.chat-timestamp::after {
+  content: '] ';
+}
+
 .scroll {
   height: 100%;
   overflow-y: scroll;
