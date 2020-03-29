@@ -1,3 +1,17 @@
+function scrollToBottom() {
+  var scrollElem = $('#chat-display .scroll')[0];
+  scrollElem.scrollTop = scrollElem.scrollHeight;
+};
+
+function displayMessage(msgType, msgText) {
+  $('#chat-display ul').append($('<li class=chat-"'+msgType+'">').text(msgText));
+  scrollToBottom();
+};
+
+function sendMessage(socket, msgType, msgText) {
+  socket.emit('send '+msgType, $('#chat-input input').val());
+};
+
 $(function() {
   var socket = io();
 
@@ -7,8 +21,7 @@ $(function() {
     //prevent page reload;
     e.preventDefault(); //prevent page reload;
 
-    //send the message through the socket
-    socket.emit('send message', $('#chat-input input').val());
+    sendMessage(socket, 'message', $('#chat-input input'));
 
     //clear message field
     $('#chat-input input').val('');
@@ -17,8 +30,6 @@ $(function() {
   });
 
   socket.on('broadcast message', function(msg) {
-    $('#chat-display ul').append($('<li>').text(msg));
-    var scrollElem = $('#chat-display .scroll')[0];
-    scrollElem.scrollTop = scrollElem.scrollHeight;
+    displayMessage('chat-message', msg);
   });
 });
