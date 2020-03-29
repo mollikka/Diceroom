@@ -50,4 +50,5 @@ html, body {
   width: 10%;
   height: 100%;
   float: right;
+  overflow: hidden;
 }
