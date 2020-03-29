@@ -33,6 +33,19 @@ html, body {
   font-weight: 100;
 }
 
+.chat-nickname {
+  color: gray;
+}
+
+.chat-nickname::after {
+  color: gray;
+}
+
+.chat-message::before {
+  color: gray;
+  content: ':';
+}
+
 .chat-timestamp::before {
   content: '[';
 }
@@ -41,7 +54,7 @@ html, body {
   content: '] ';
 }
 
-.chat-join, .chat-leave {
+.chat-join, .chat-leave, .chat-rename {
   color: gray;
   font-weight: 100;
 }

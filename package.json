@@ -2,9 +2,9 @@
     "name": "diceroom-test-1",
     "version": "0.0.1",
     "scripts": {
-        "watch": "nodemon -w frontend -w backend -e '*'",
+        "watch": "nodemon -w frontend -w backend -w common -e '*'",
         "start": "(npm run build && npm run deploy)",
-        "build": "babel backend -d build --copy-files; babel frontend -d build/frontend --copy-files",
+        "build": "rm -r build; babel backend common -d build --copy-files; babel frontend common -d build/frontend --copy-files",
         "deploy": "node build/main.js"
     },
     "description": "Play nice, roll the dice",

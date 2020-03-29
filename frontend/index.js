@@ -3,16 +3,17 @@ function scrollToBottom() {
   scrollElem.scrollTop = scrollElem.scrollHeight;
 };
 
-function displayMessage(msgType, msgText) {
+function displayMessage(msgType, nick, msgText) {
   var timestamp = (new Date).toLocaleTimeString('fi-FI');
   var newEntry = $('#chat-display ul').append($('<li>'));
   newEntry.append($('<span class=chat-timestamp>'+timestamp+'</span>'));
-  newEntry.append($('<span class=chat-'+msgType+'></span>').text(msgText));
+  newEntry.append($('<span class=chat-nickname>'+nick+'</span>'));
+  newEntry.append($('<span class=chat-'+msgType+'></span>').text(' '+msgText));
   scrollToBottom();
 };
 
 function sendMessage(socket, msgType, msgText) {
-  socket.emit('send '+msgType, $('#chat-input input').val());
+  socket.emit('send '+msgType, msgText);
 };
 
 $(function() {
@@ -24,7 +25,17 @@ $(function() {
     //prevent page reload;
     e.preventDefault(); //prevent page reload;
 
-    sendMessage(socket, 'message', $('#chat-input input'));
+    var message = $('#chat-input input').val();
+    var commandMatch = /^\/([a-z]+) (.*)/g.exec(message)
+    if (commandMatch) {
+      operator = commandMatch[1];
+      operand = commandMatch[2];
+      if (operator = 'nick') {
+        sendMessage(socket, 'rename', operand);
+      }
+    } else {
+      sendMessage(socket, 'message', message);
+    }
 
     //clear message field
     $('#chat-input input').val('');
@@ -32,15 +43,19 @@ $(function() {
     return false;
   });
 
-  socket.on('broadcast message', function(msg) {
-    displayMessage('message', msg);
+  socket.on('broadcast message', function(nick, msg) {
+    displayMessage('message', nick, msg);
   });
 
-  socket.on('broadcast join', function(msg) {
-    displayMessage('join', 'user connected');
+  socket.on('broadcast join', function(nick) {
+    displayMessage('join', nick, 'connected');
   });
 
-  socket.on('broadcast leave', function(msg) {
-    displayMessage('leave', 'user disconnected');
+  socket.on('broadcast leave', function(nick) {
+    displayMessage('leave', nick, 'disconnected');
+  });
+
+  socket.on('broadcast rename', function(oldName, newName) {
+    displayMessage('rename', oldName, 'renamed to ' + newName);
   });
 });
