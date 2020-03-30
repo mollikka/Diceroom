@@ -60,9 +60,11 @@ io.on('connection', function (socket) {
   socket.on('send rename', function(msg) {
     var oldName = socket.nickname;
     var newName = msg.substring(0, c.MAX_NICKNAME_LENGTH);
-    console.log(strSocket(socket) + ' renamed to ' + newName);
-    socket.nickname = newName;
-    socket.to(socket.channel).emit('broadcast rename', oldName, newName);
+    if (oldName != newName) {
+      console.log(strSocket(socket) + ' renamed to ' + newName);
+      socket.nickname = newName;
+      socket.to(socket.channel).emit('broadcast rename', oldName, newName);
+    }
   });
 
   socket.on('send join', function(msg) {
