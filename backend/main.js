@@ -48,7 +48,7 @@ io.on('connection', function (socket) {
 
   socket.on('disconnect', function () {
     console.log(strSocket(socket) + ' disconnected');
-    socket.to(socket.channel).emit('broadcast leave', socket.nickname);
+    socket.to(socket.channel).emit('broadcast leave', socket.nickname, socket.channel);
   });
 
   //receive and broadcast message
