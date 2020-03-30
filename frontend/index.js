@@ -64,6 +64,8 @@ $(function() {
         socket.channel = getDefaultChannel();
         sendMessage(socket, 'join', getDefaultChannel());
         displayMessage('join', 'you', 'moved to ' + getDefaultChannel());
+      } else if (operator == 'roll') {
+        sendMessage(socket, 'roll', operand);
       }
     } else {
       sendMessage(socket, 'message', message);
@@ -92,6 +94,10 @@ $(function() {
 
   socket.on('broadcast message', function(nick, msg) {
     displayMessage('message', nick, msg);
+  });
+
+  socket.on('broadcast roll', function(nick, rollRange, rollResult) {
+    displayMessage('roll', nick, ' rolled a d' + rollRange + ': ' + rollResult);
   });
 
   socket.on('broadcast join', function(nick, channel) {

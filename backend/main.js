@@ -71,6 +71,15 @@ io.on('connection', function (socket) {
     }
   });
 
+  socket.on('send roll', function(msg) {
+    console.log(strSocket(socket) + ' is rolling a d' + rollRange);
+    var rollRange = parseInt(msg) || 20;
+    rollRange = Math.max(2,rollRange);
+    rollResult = (Math.floor(Math.random()*rollRange) + 1);
+    console.log(strSocket(socket) + ' rolled ' + rollResult + '/' + rollRange);
+    io.to(socket.channel).emit('broadcast roll', socket.nickname, rollRange, rollResult);
+  });
+
   socket.on('send join', function(msg) {
     var oldRoom = socket.channel;
     var newRoom = newRoom = c.filterChannelName(msg);
