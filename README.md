@@ -32,12 +32,12 @@ remote D&D games.
  - [socket.io](socket.io) handles HTML sockets
  - [Babel](babeljs.io) compiles Javascript for modern JS features
  - [nodemon](github.com/remy/nodemon) monitors changes and restarts Node.js when developing
+ - [dotenv](gitlab.com/motdotla/dotenv) loads environment variables from a file
 
 ### Other stuff I might want to look at
 
  - [CORS](github.com/expressjs/cors) manages browser-server interaction
  - [Sequelize](sequelize.org) manages object-relational mapping for database interaction
- - [dotenv](gitlab.com/motdotla/dotenv) loads environment variables from a file
  - [pg](github.com/brianc/node-postgres) interfaces with a PostgreSQL server
  - [pg-hstore](github.com/scarney81/pg-hstore) serializes JSON data
 
