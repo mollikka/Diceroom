@@ -11,6 +11,18 @@ function displayMessage(msgType, nick, msgText) {
   newEntry.append($('<span class=chat-'+msgType+'></span>').text(' '+msgText));
   scrollToBottom();
 };
+function displayHelp() {
+  var newEntry = $('#chat-display ul').append($('<li>'));
+  newEntry.append($('<span class=chat-help>Welcome to Diceroom chat!</span>'));
+  newEntry.append($('<span class=chat-help>Commands:</span>'));
+  newEntry.append($('<span class=chat-help>/help: display this help text</span>'));
+  newEntry.append($('<span class=chat-help>/nick [X]: assume the identity X</span>'));
+  newEntry.append($('<span class=chat-help>/join [X]: join channel X</span>'));
+  newEntry.append($('<span class=chat-help>/leave: return to lobby</span>'));
+  newEntry.append($('<span class=chat-help>/roll: roll d20</span>'));
+  newEntry.append($('<span class=chat-help>/roll [X]: roll dX</span>'));
+  scrollToBottom();
+};
 
 function sendMessage(socket, msgType, msgText) {
   console.log(msgType + ': ' + msgText);
@@ -18,6 +30,7 @@ function sendMessage(socket, msgType, msgText) {
 };
 
 $(function() {
+  displayHelp();
   var socket = io();
   socket.nickname = 'guest';
   socket.channel = getDefaultChannel();
@@ -66,6 +79,8 @@ $(function() {
         displayMessage('join', 'you', 'moved to ' + getDefaultChannel());
       } else if (operator == 'roll') {
         sendMessage(socket, 'roll', operand);
+      } else if (operator == 'help') {
+        displayHelp();
       }
     } else {
       sendMessage(socket, 'message', message);

@@ -33,6 +33,14 @@ html, body {
   font-weight: 100;
 }
 
+.chat-help {
+  color: blue;
+}
+.chat-help::after {
+  content: '\a';
+  white-space: pre;
+}
+
 .chat-nickname {
   color: gray;
 }
