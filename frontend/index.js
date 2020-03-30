@@ -35,10 +35,21 @@ $(function() {
     }
 
     var message = $('#chat-input input').val();
+    //catch commands in the format /operator operand
     var commandMatch = /^\/([a-z]+) (.*)/g.exec(message)
     if (commandMatch) {
       operator = commandMatch[1];
       operand = commandMatch[2];
+    } else {
+      //catch commands in the format /operator
+      commandMatch = /^\/([a-z]+)/g.exec(message)
+      if (commandMatch) {
+        operator = commandMatch[1];
+        operand = '';
+      }
+    }
+
+    if (commandMatch) {
       if (operator == 'nick') {
         socket.nickname = operand;
         sendMessage(socket, 'rename', operand);
@@ -47,6 +58,10 @@ $(function() {
         socket.channel = operand;
         sendMessage(socket, 'join', operand);
         displayMessage('join', 'you', 'moved to ' + operand);
+      } else if (operator == 'leave') {
+        socket.channel = DEFAULT_CHANNEL;
+        sendMessage(socket, 'join', DEFAULT_CHANNEL);
+        displayMessage('join', 'you', 'moved to ' + DEFAULT_CHANNEL);
       }
     } else {
       sendMessage(socket, 'message', message);

@@ -74,11 +74,6 @@ io.on('connection', function (socket) {
     }
   });
 
-  socket.on('send leave', function(msg) {
-    var oldRoom = socket.channel;
-    leaveChannel(socket, oldRoom);
-  });
-
 });
 
 server.listen(3000, function () {
