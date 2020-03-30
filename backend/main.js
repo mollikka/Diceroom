@@ -2,7 +2,7 @@ var express = require('express');
 var http = require('http');
 var socketio = require('socket.io');
 
-var c = require('./chatconstants');
+var c = require('./chat');
 
 app = express();
 server = http.createServer(app);
@@ -29,7 +29,7 @@ function leaveChannel(socket, channelName) {
 }
 
 function joinChannel(socket, channelname) {
-  var newRoom = channelname.substring(0, c.MAX_CHANNELNAME_LENGTH);
+  var newRoom = newRoom = c.filterChannelName(channelname);
   socket.channel = newRoom;
   console.log(strSocket(socket) + ' joined channel '+channelname);
   socket.join(newRoom, function() {
@@ -44,7 +44,7 @@ io.on('connection', function (socket) {
   socket.nickname = 'guest';
 
   console.log(strSocket(socket) + ' connected from ' + address);
-  joinChannel(socket, c.DEFAULT_CHANNEL);
+  joinChannel(socket, c.getDefaultChannel());
 
   socket.on('disconnect', function () {
     console.log(strSocket(socket) + ' disconnected');
@@ -59,7 +59,7 @@ io.on('connection', function (socket) {
 
   socket.on('send rename', function(msg) {
     var oldName = socket.nickname;
-    var newName = msg.substring(0, c.MAX_NICKNAME_LENGTH);
+    var newName = c.filterNickname(msg);
     if (oldName != newName) {
       console.log(strSocket(socket) + ' renamed to ' + newName);
       socket.nickname = newName;
@@ -69,7 +69,7 @@ io.on('connection', function (socket) {
 
   socket.on('send join', function(msg) {
     var oldRoom = socket.channel;
-    var newRoom = msg.substring(0, c.MAX_CHANNELNAME_LENGTH);
+    var newRoom = newRoom = c.filterChannelName(msg);
     if (oldRoom != newRoom) {
       leaveChannel(socket, oldRoom);
       joinChannel(socket, newRoom);

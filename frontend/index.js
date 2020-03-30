@@ -20,7 +20,7 @@ function sendMessage(socket, msgType, msgText) {
 $(function() {
   var socket = io();
   socket.nickname = 'guest';
-  socket.channel = DEFAULT_CHANNEL;
+  socket.channel = getDefaultChannel();
   displayMessage('connect', 'you', 'connected');
 
   //submit chat message
@@ -51,17 +51,19 @@ $(function() {
 
     if (commandMatch) {
       if (operator == 'nick') {
+        operand = filterNickname(operand);
         socket.nickname = operand;
         sendMessage(socket, 'rename', operand);
         displayMessage('rename', 'you', 'renamed yourself to ' + operand);
       } else if (operator == 'join') {
+        operand = filterChannelName(operand);
         socket.channel = operand;
         sendMessage(socket, 'join', operand);
         displayMessage('join', 'you', 'moved to ' + operand);
       } else if (operator == 'leave') {
-        socket.channel = DEFAULT_CHANNEL;
-        sendMessage(socket, 'join', DEFAULT_CHANNEL);
-        displayMessage('join', 'you', 'moved to ' + DEFAULT_CHANNEL);
+        socket.channel = getDefaultChannel();
+        sendMessage(socket, 'join', getDefaultChannel());
+        displayMessage('join', 'you', 'moved to ' + getDefaultChannel());
       }
     } else {
       sendMessage(socket, 'message', message);
