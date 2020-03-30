@@ -20,13 +20,19 @@ function sendMessage(socket, msgType, msgText) {
 $(function() {
   var socket = io();
   socket.nickname = 'guest';
+  socket.channel = DEFAULT_CHANNEL;
   displayMessage('connect', 'you', 'connected');
 
   //submit chat message
   $('#chat-input').submit(function(e) {
 
     //prevent page reload;
-    e.preventDefault(); //prevent page reload;
+    e.preventDefault();
+
+    //deny message entry if not connected
+    if (! socket.connected ) {
+      return;
+    }
 
     var message = $('#chat-input input').val();
     var commandMatch = /^\/([a-z]+) (.*)/g.exec(message)
@@ -53,13 +59,18 @@ $(function() {
     return false;
   });
 
-  socket.on('disconnect', function(socket) {
+  socket.on('disconnect', function(reason) {
     displayMessage('connect', 'you', 'disconnected');
   });
 
-  socket.on('reconnect', function(socket) {
-    displayMessage('connect', 'you', 'reconnected');
+  socket.on('reconnecting', function(attemptNumber) {
+    displayMessage('connect', 'you', 'are trying to reconnect ('+attemptNumber+')');
+  });
+
+  socket.on('reconnect', function(attemptNumber) {
+    displayMessage('connect', 'you', 'reconnected after '+attemptNumber+ ' retries');
     sendMessage(socket, 'rename', socket.nickname);
+    sendMessage(socket, 'join', socket.channel);
   });
 
   socket.on('broadcast message', function(nick, msg) {
